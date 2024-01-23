@@ -7,16 +7,16 @@ import javax.swing.*;
 import java.util.ArrayList;
 
 
-public class PairWii implements MoteFinderListener {
+public class PairWii {
     Mote mote;
     boolean[] remoteLEDs = new boolean[4];
     ArrayList<Mote> motes = new ArrayList<>();
 
     public PairWii() {
-        remoteLEDs[0] = true;
-        remoteLEDs[1] = false;
-        remoteLEDs[2] =false;
-        remoteLEDs[3] =false;
+        remoteLEDs[0] = false;
+        remoteLEDs[1] = true;
+        remoteLEDs[2] = false;
+        remoteLEDs[3] = false;
 //        this.mote = mote;
 //        MoteFinderListener listener = new MoteFinderListener() {
 //            @Override
@@ -49,17 +49,18 @@ public class PairWii implements MoteFinderListener {
     }
 
 
-    public void moteFound(Mote mote){
-        this.mote = mote;
-    }
+//    public void moteFound(Mote mote){
+//        this.mote = mote;
+//    }
     public void findMote(){
         MoteFinderListener listener = new MoteFinderListener() {
             @Override
             public void moteFound(Mote mote) {
                 System.out.println("mote found: " + mote.getBluetoothAddress());
-                motes.add(mote);
                 mote.rumble(2000L);
                 mote.setPlayerLeds(remoteLEDs);
+                motes.add(mote);
+
 
             }
         };
@@ -67,6 +68,7 @@ public class PairWii implements MoteFinderListener {
         finder.addMoteFinderListener(listener);
 
         System.out.println("starting discovery");
+        System.out.println("press the sync button on the back of the remote near the batteries OR hold down together buttons 1,2");
         finder.startDiscovery();
 
         System.out.println("Putting thread to sleep..");
@@ -83,24 +85,8 @@ public class PairWii implements MoteFinderListener {
 //        for (Mote m : motes) {
 //            m.disconnect();
 //        }
-//        if(finder==null){
-//            finder = MoteFinder.getMoteFinder();
-//            finder.addMoteFinderListener(this);
-//        }
-//        System.out.println("Starting discovery in findMote");
-//        finder.startDiscovery();
-//        try{
-//            synchronized (lock){
-//                lock.wait();
-//            }
-//        } catch (InterruptedException e) {
-//            throw new RuntimeException(e);
-//        }
-//        return mote;
     }
 
-//    MoteFinder finder;
-//    Mote device;
 //
 //    @Override
 //    public void moteFound(Mote mote) {
@@ -110,67 +96,6 @@ public class PairWii implements MoteFinderListener {
 //        finder.removeMoteFinderListener(this);
 //
 //    }
-//    public Mote findRemote(){
-//        if (device == null) {
-//            finder = MoteFinder.getMoteFinder();
-//        }
-//        finder.addMoteFinderListener(this);
-//        finder.startDiscovery();
-//
-//        return device;
-//    }
 
 
-    public void getButtons(){
-        mote.addCoreButtonListener(new CoreButtonListener() {
-
-            @Override
-            public void buttonPressed(CoreButtonEvent coreButtonEvent) {
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (coreButtonEvent.isButtonAPressed() && coreButtonEvent.isButtonBPressed()) {
-                            System.out.println("AB");
-
-                        } else if (coreButtonEvent.isButtonAPressed()) {
-                            System.out.println("BUTTON_A");
-
-                        } else if (coreButtonEvent.isButtonBPressed()) {
-                            System.out.println("BUTTON_B");
-
-                        } else if (coreButtonEvent.isButtonPlusPressed()) {
-                            System.out.println("BUTTON_PLUS");
-
-                        } else if (coreButtonEvent.isButtonMinusPressed()) {
-                            System.out.println("BUTTON_MINUS");
-
-                        } else if (coreButtonEvent.isButtonHomePressed()) {
-                            System.out.println("BUTTON_HOME");
-
-                        } else if (coreButtonEvent.isDPadLeftPressed()) {
-                            System.out.println("D_PAD_LEFT");
-
-                        } else if (coreButtonEvent.isDPadRightPressed()) {
-                            System.out.println("D_PAD_RIGHT");
-
-                        } else if (coreButtonEvent.isDPadUpPressed()) {
-                            System.out.println("D_PAD_UP");
-
-                        } else if (coreButtonEvent.isDPadDownPressed()) {
-                            System.out.println("D_PAD_DOWN");
-
-                        } else if (coreButtonEvent.isButtonOnePressed()) {
-                            System.out.println("BUTTON_ONE");
-
-                        } else if (coreButtonEvent.isButtonTwoPressed()) {
-                            System.out.println("BUTTON_TWO");
-
-                        } else if (coreButtonEvent.isNoButtonPressed()) {
-                            System.out.println("NONE");
-                        }
-                    }
-                });
-            }
-        });
-    }
 }

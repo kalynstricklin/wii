@@ -4,8 +4,8 @@ import motej.event.AccelerometerEvent;
 import motej.event.AccelerometerListener;
 import motej.event.CoreButtonEvent;
 import motej.event.CoreButtonListener;
+import motej.request.ReportModeRequest;
 
-import javax.bluetooth.RemoteDevice;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -14,22 +14,28 @@ public class WiiPanel extends JPanel  {
 
     JButton connectButton;
     Mote mote;
-
-    PairWii pairWii;
-    private boolean[] leds = new boolean[] { false, false, false, false};
+    MoteFinderHandler moteFinderHandler;
+//    PairWii pairWii;
+//    private boolean[] leds = new boolean[] { false, false, false, false};
 
     public WiiPanel(){
         setBackground(Color.GRAY);
         connectButton = new JButton("CONNECT WII");
         connectButton.setBackground(Color.white);
-        connectButton.addActionListener(e -> new PairWii().findMote());
+        connectButton.addActionListener(e -> new MoteFinderHandler().findMote());
+//        connectButton.addActionListener(e -> new PairWii().findMote());
         add(connectButton);
 
     }
     public Action findAction = new AbstractAction() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            mote = pairWii.findMote();
+            mote = moteFinderHandler.findMote();
+//            mote.addIrCameraListener();
+//            mote.enableIrCamera();
+            mote.disableIrCamera();
+            mote.setReportMode(ReportModeRequest.DATA_REPORT_0x36);
+
             if(mote != null){
                 while (mote.getStatusInformationReport() == null){
                     System.out.println("Waiting for status report");
@@ -63,7 +69,6 @@ public class WiiPanel extends JPanel  {
     // 						accz = evt.getZ();
                     }
                 });
-
                 mote.addCoreButtonListener(new CoreButtonListener() {
                     @Override
                     public void buttonPressed(CoreButtonEvent coreButtonEvent) {
